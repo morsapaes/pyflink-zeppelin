@@ -14,7 +14,7 @@ You can find instructions on how to run Zeppelin with the Flink interpreter in [
 
 ## Exploring the Movie Lovers on MUBI dataset (Kaggle)
 
-`ApacheCon@Home 2020_2FH7SDKQ8.zpln` notebook. You'll be looking at three different files:
+Once Zeppelin is up and running, import the `ApacheCon@Home 2020_2FH7SDKQ8.zpln` notebook. You'll be looking at three different files:
 
 * `mubi_movie_data.csv` - Data from all movies registered on Mubi.
 
@@ -24,7 +24,7 @@ You can find instructions on how to run Zeppelin with the Flink interpreter in [
 
 ### Interpreters
 
-Zeppelin has support for a wide range of interpreters, like Flink, Spark, R, Python, Markdown, bash and a lot of others. It allows you to use multiple interpreters in a single notebook, too! Here, you'll use a mix of the `%flink.pyflink` ([PyFlink](https://zeppelin.apache.org/docs/0.9.0/interpreter/flink.html#pyflinkflinkpyflink)) and `%flink.bsql` ([Flink Batch SQL](https://zeppelin.apache.org/docs/0.9.0/interpreter/flink.html#flink-batch-sql)) interpreters. For `%flink.pyflink`, Zeppelin creates the following environment variables for you:
+Zeppelin has support for a wide range of [interpreters](http://zeppelin.apache.org/docs/0.9.0/usage/interpreter/overview.html), like Flink, R, Python, Markdown, bash and a lot of others. It allows you to use multiple interpreters in a single notebook, too! Here, you'll use a mix of the `%flink.pyflink` ([PyFlink](https://zeppelin.apache.org/docs/0.9.0/interpreter/flink.html#pyflinkflinkpyflink)) and `%flink.bsql` ([Flink Batch SQL](https://zeppelin.apache.org/docs/0.9.0/interpreter/flink.html#flink-batch-sql)) interpreters. For `%flink.pyflink`, Zeppelin creates the following environment variables for you:
 
 * `s_env`: StreamExecutionEnvironment
 
@@ -46,11 +46,11 @@ The recommended (and quickest way) to define a source table is to use [SQL DDL](
 
 As an example, you can use PyFlink to query the `mubi_movies` table and get the average movie popularity per movie release year. What does it tell us?
 
-1. There are two clear outlier years when it comes to popularity (1878 and 1902). If you investigate further, there is only one movie release in each of these years on Mubi ("Sallie Gardner at a Gallop" and "A Trip to the Moon") — they're just really popular!	
+:moon: There are two clear outlier years when it comes to popularity (1878 and 1902). If you investigate further, there is only one movie release in each of these years on Mubi ("Sallie Gardner at a Gallop" and "A Trip to the Moon") — they're just really popular!	
 
-2. The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.
+:new_moon_with_face: The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.
 
-3. The 1920s-1960s are also considered the golden era of Hollywood, so that can also explain the increased popularity of movies released in this period.
+:sparkles: The 1920s-1960s are considered the golden era of Hollywood, so that can explain the increased popularity of movies released in this period.
 
 ![avg_popularity](https://user-images.githubusercontent.com/23521087/110458892-95369c80-80cc-11eb-8464-c8cc6144d594.png)
 
