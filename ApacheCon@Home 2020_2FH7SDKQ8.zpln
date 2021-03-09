@@ -1,0 +1,1346 @@
+{
+  "paragraphs": [
+    {
+      "text": "%md\n\n## Exploring the Movie Lovers on MUBI dataset (Kaggle)\n\nWe will be looking at three different files:\n\n1. `mubi_movie_data.csv` - Data from all movies registered on Mubi.\n2. `mubi_ratings_data.csv` - Data from ratings on Mubi for users who did not set their profile in private mode (~15 million rows).\n3. `mubi_ratings_user_data.csv` - Aggregated data from users for a specific day.\n\n### Flink\n\nWe will use a mix of the %flink.pyflink and %flink.bsql interpreters. For %flink.pyflink, Zeppelin creates the following environment variables for us:\n\n* s_env: StreamExecutionEnvironment\n* b_env: ExecutionEnvironment\n* st_env: StreamTableEnvironment\n* bt_env: BatchTableEnvironment\n\n\u003e For simplicity, we\u0027re batch-reading files stored locally (also to keep my machine from exploding during the presentation!). The cool thing about PyFlink is that you can _e.g._ replace the existing source tables with Kafka-backed ones that continuously consume data and not have to change any of the code (other than _bt\\_env_ to _st\\_env_).",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:39:04.827",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eExploring the Movie Lovers on MUBI dataset (Kaggle)\u003c/h2\u003e\n\u003cp\u003eWe will be looking at three different files:\u003c/p\u003e\n\u003col\u003e\n\u003cli\u003e\u003ccode\u003emubi_movie_data.csv\u003c/code\u003e - Data from all movies registered on Mubi.\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003emubi_ratings_data.csv\u003c/code\u003e - Data from ratings on Mubi for users who did not set their profile in private mode (~15 million rows).\u003c/li\u003e\n\u003cli\u003e\u003ccode\u003emubi_ratings_user_data.csv\u003c/code\u003e - Aggregated data from users for a specific day.\u003c/li\u003e\n\u003c/ol\u003e\n\u003ch3\u003eFlink\u003c/h3\u003e\n\u003cp\u003eWe will use a mix of the %flink.pyflink and %flink.bsql interpreters. For %flink.pyflink, Zeppelin creates the following environment variables for us:\u003c/p\u003e\n\u003cul\u003e\n\u003cli\u003es_env: StreamExecutionEnvironment\u003c/li\u003e\n\u003cli\u003eb_env: ExecutionEnvironment\u003c/li\u003e\n\u003cli\u003est_env: StreamTableEnvironment\u003c/li\u003e\n\u003cli\u003ebt_env: BatchTableEnvironment\u003c/li\u003e\n\u003c/ul\u003e\n\u003cblockquote\u003e\n\u003cp\u003eFor simplicity, we\u0026rsquo;re batch-reading files stored locally (also to keep my machine from exploding during the presentation!). The cool thing about PyFlink is that you can \u003cem\u003ee.g.\u003c/em\u003e replace the existing source tables with Kafka-backed ones that continuously consume data and not have to change any of the code (other than \u003cem\u003ebt_env\u003c/em\u003e to \u003cem\u003est_env\u003c/em\u003e).\u003c/p\u003e\n\u003c/blockquote\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1599557115027_1074138837",
+      "id": "paragraph_1599557115027_1074138837",
+      "dateCreated": "2020-09-08 11:25:15.033",
+      "dateStarted": "2020-09-30 20:39:04.826",
+      "dateFinished": "2020-09-30 20:39:04.907",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n## Create the Movie Source Table\n\nThe recommended (and quickest way) to define our source tables is to use SQL DDL. You can use either interpreter for this!",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:17:56.557",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eCreate the Movie Source Table\u003c/h2\u003e\n\u003cp\u003eThe recommended (and quickest way) to define our source tables is to use SQL DDL. You can use either interpreter for this!\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600409350755_1629901068",
+      "id": "paragraph_1600409350755_1629901068",
+      "dateCreated": "2020-09-18 08:09:10.757",
+      "dateStarted": "2020-09-30 18:17:56.567",
+      "dateFinished": "2020-09-30 18:17:56.581",
+      "status": "FINISHED"
+    },
+    {
+      "title": "First, check out a sample of the data using the %sh interpreter",
+      "text": "%sh\n\nhead -n 5 /Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_movie_data.csv",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:39:56.918",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/sh",
+        "editorHide": false,
+        "tableHide": true,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "1,La Antena,2007.0,http://mubi.com/films/la-antena,en,105,https://images.mubicdn.net/images/film/1/cache-7927-1581389497/image-w1280.jpg,131,Esteban Sapir,http://mubi.com/cast/esteban-sapir\n2,Elementary Particles,2006.0,http://mubi.com/films/elementary-particles,en,23,https://images.mubicdn.net/images/film/2/cache-512179-1581389841/image-w1280.jpg,73,Oskar Roehler,http://mubi.com/cast/oskar-roehler\n3,It\u0027s Winter,2006.0,http://mubi.com/films/its-winter,en,21,https://images.mubicdn.net/images/film/3/cache-7929-1481539519/image-w1280.jpg,82,Rafi Pitts,http://mubi.com/cast/rafi-pitts\n4,Kirikou and the Wild Beasts,2005.0,http://mubi.com/films/kirikou-and-the-wild-beasts,en,46,https://images.mubicdn.net/images/film/4/cache-7930-1568880017/image-w1280.jpg,\"89, 90\",\"Michel Ocelot, Bénédicte Galup\",\"http://mubi.com/cast/michel-ocelot, http://mubi.com/cast/benedicte-galup\"\n5,Padre Nuestro,2007.0,http://mubi.com/films/padre-nuestro,en,7,https://images.mubicdn.net/images/film/5/cache-7931-1581390636/image-w1280.jpg,92,Christopher Zalla,http://mubi.com/cast/christopher-zalla\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600116538608_358670789",
+      "id": "paragraph_1600116538608_358670789",
+      "dateCreated": "2020-09-14 22:48:58.611",
+      "dateStarted": "2020-09-30 18:17:46.175",
+      "dateFinished": "2020-09-30 18:17:46.222",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Option 1. Create table using %flink.pyflink",
+      "text": "%flink.pyflink\n\nc_exp_drop_movies \u003d \"\"\"\nDROP TABLE IF EXISTS mubi_movies\n\"\"\"\n\nc_exp_movies \u003d \"\"\"\nCREATE TABLE mubi_movies (\n    movie_id INT,\n    movie_title STRING,\n    movie_release_year STRING, --Needs cleanup, so bringing in as STRING\n    movie_url STRING,\n    movie_title_language STRING,\n    movie_popularity INT,\n    movie_image_url STRING,\n    director_id STRING,        --Needs cleanup, so bringing in as STRING\n    director_name STRING,\n    director_url STRING\n)\nWITH (\n  \u0027connector\u0027 \u003d \u0027filesystem\u0027,\n  \u0027path\u0027 \u003d \u0027/Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_movie_data.csv\u0027,\n  \u0027format\u0027 \u003d \u0027csv\u0027\n)\n\"\"\"\n\nbt_env.execute_sql(c_exp_drop_movies)\nbt_env.execute_sql(c_exp_movies)\n\nmubi_movies \u003d bt_env \\\n    .from_path(\"mubi_movies\") \\\n    .select(\"movie_id.count as movie_cnt\")\n\nz.show(mubi_movies)\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:11:14.591",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 96.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "movie_cnt": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "movie_cnt\n226575\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/f7efa5ff54d112bc23993fe9eb0f1b33"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600087607017_868210556",
+      "id": "paragraph_1600087607017_868210556",
+      "dateCreated": "2020-09-14 14:46:47.017",
+      "dateStarted": "2020-09-30 18:11:14.610",
+      "dateFinished": "2020-09-30 18:11:51.436",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Option 2. Create table using %flink.bsql",
+      "text": "%flink.bsql\n\nDROP TABLE IF EXISTS mubi_movies;\n\nCREATE TABLE mubi_movies (\n    movie_id INT,\n    movie_title STRING,\n    movie_release_year STRING, --Needs cleanup, so bringing in as STRING\n    movie_url STRING,\n    movie_title_language STRING,\n    movie_popularity INT,\n    movie_image_url STRING,\n    director_id STRING,        --Needs cleanup, so bringing in as STRING\n    director_name STRING,\n    director_url STRING\n)\nWITH (\n  \u0027connector\u0027 \u003d \u0027filesystem\u0027,\n  \u0027path\u0027 \u003d \u0027/Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_movie_data.csv\u0027,\n  \u0027format\u0027 \u003d \u0027csv\u0027\n);\n\n--Get a record count.\nSELECT COUNT(*) movie_cnt FROM mubi_movies;",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:13:03.148",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "user_id": "string",
+                      "list_id": "string",
+                      "list_title": "string",
+                      "list_movie_number": "string",
+                      "list_update_timestamp_utc": "string",
+                      "list_creation_timestamp_utc": "string",
+                      "list_followers": "string",
+                      "list_url": "string",
+                      "list_comments": "string",
+                      "list_description": "string",
+                      "list_cover_image_url": "string",
+                      "list_first_image_url": "string",
+                      "list_second_image_url": "string",
+                      "list_third_image_url": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            },
+            "helium": {}
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 220.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "movie_cnt": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "lineNumbers": false,
+        "title": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been dropped.\nTable has been created.\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "movie_cnt\n226575\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/16aab978e3465df48184f92f868a4d0e"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1599652777706_252498674",
+      "id": "paragraph_1599652777706_252498674",
+      "dateCreated": "2020-09-09 13:59:37.709",
+      "dateStarted": "2020-09-30 18:13:03.155",
+      "dateFinished": "2020-09-30 18:13:07.853",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n## Query the Movie Table\n\nWe will use PyFlink to query the `mubi_movies` table and get the average movie popularity per movie release year. What do we see?\n\n**1.** There are two clear outlier years when it comes to popularity (1878 and 1902). If you check further, there is only one movie release in each of these years on Mubi (\"Sallie Gardner at a Gallop\" and \"A Trip to the Moon\") — they\u0027re just really popular!\n**2.** The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.\n**3.** The 1920s-1960s are also considered the golden era of Hollywood, so that can also explain the increased popularity of movies released in this period.\n\n\u003e If you visit the [Flink Web UI](http://localhost:8081/) once you click \"Run\", you will see the job that generated from this code!",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:18:32.735",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eQuery the Movie Table\u003c/h2\u003e\n\u003cp\u003eWe will use PyFlink to query the \u003ccode\u003emubi_movies\u003c/code\u003e table and get the average movie popularity per movie release year. What do we see?\u003c/p\u003e\n\u003cp\u003e\u003cstrong\u003e1.\u003c/strong\u003e There are two clear outlier years when it comes to popularity (1878 and 1902). If you check further, there is only one movie release in each of these years on Mubi (\u0026ldquo;Sallie Gardner at a Gallop\u0026rdquo; and \u0026ldquo;A Trip to the Moon\u0026rdquo;) — they\u0026rsquo;re just really popular!\u003cbr /\u003e\n\u003cstrong\u003e2.\u003c/strong\u003e The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.\u003cbr /\u003e\n\u003cstrong\u003e3.\u003c/strong\u003e The 1920s-1960s are also considered the golden era of Hollywood, so that can also explain the increased popularity of movies released in this period.\u003c/p\u003e\n\u003cblockquote\u003e\n\u003cp\u003eIf you visit the \u003ca href\u003d\"http://localhost:8081/\"\u003eFlink Web UI\u003c/a\u003e once you click \u0026ldquo;Run\u0026rdquo;, you will see the job that generated from this code!\u003c/p\u003e\n\u003c/blockquote\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600409644396_1412497187",
+      "id": "paragraph_1600409644396_1412497187",
+      "dateCreated": "2020-09-18 08:14:04.397",
+      "dateStarted": "2020-09-30 18:18:32.747",
+      "dateFinished": "2020-09-30 18:18:32.769",
+      "status": "FINISHED"
+    },
+    {
+      "title": "AVG Movie Popularity / Release Year",
+      "text": "%flink.pyflink\n\nmovies_avg_popularity \u003d bt_env \\\n    .from_path(\"mubi_movies\") \\\n    .group_by(\"movie_release_year\") \\\n    .select(\"movie_release_year.substring(1,4) AS movie_year,movie_release_year.substring(1,3)+\\\u00270s\\\u0027 AS movie_decade, movie_popularity.avg AS popularity_avg\")\n\nz.show(movies_avg_popularity)",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:41:52.933",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "scatterChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "movie_year": "string",
+                      "movie_decade": "string",
+                      "popularity_avg": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "scatterChart": {
+                  "xAxis": {
+                    "name": "movie_year",
+                    "index": 0.0,
+                    "aggr": "sum"
+                  },
+                  "yAxis": {
+                    "name": "popularity_avg",
+                    "index": 2.0,
+                    "aggr": "sum"
+                  },
+                  "group": {
+                    "name": "movie_decade",
+                    "index": 1.0,
+                    "aggr": "sum"
+                  },
+                  "size": {
+                    "name": "popularity_avg",
+                    "index": 2.0,
+                    "aggr": "sum"
+                  }
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "movie_year",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "movie_decade",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "title": true,
+        "editorHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "movie_year\tmovie_decade\tpopularity_avg\n2007\t2000s\t13\n2006\t2000s\t11\n2005\t2000s\t9\n2003\t2000s\t16\n1957\t1950s\t35\n1926\t1920s\t20\n1930\t1930s\t7\n1960\t1960s\t40\n1922\t1920s\t30\n1998\t1990s\t19\n1999\t1990s\t21\n2002\t2000s\t14\n2001\t2000s\t21\n1995\t1990s\t21\n1996\t1990s\t13\n1997\t1990s\t18\n2004\t2000s\t14\n2000\t2000s\t17\n1987\t1980s\t14\n1992\t1990s\t14\n1994\t1990s\t27\n2008\t2000s\t12\n1962\t1960s\t37\n1965\t1960s\t14\n1990\t1990s\t16\n1991\t1990s\t16\n1979\t1970s\t24\n1971\t1970s\t21\n1963\t1960s\t29\n1959\t1950s\t31\n1973\t1970s\t19\n1969\t1960s\t12\n1982\t1980s\t18\n1954\t1950s\t39\n1966\t1960s\t27\n1942\t1940s\t19\n1968\t1960s\t25\n1950\t1950s\t32\n1948\t1940s\t27\n1944\t1940s\t16\n1940\t1940s\t22\n1955\t1950s\t21\n1946\t1940s\t25\n1988\t1980s\t17\n1967\t1960s\t20\n1977\t1970s\t21\n1976\t1970s\t17\n1985\t1980s\t16\n1978\t1970s\t11\n1993\t1990s\t17\n1928\t1920s\t27\n1989\t1980s\t13\n1981\t1980s\t11\n1935\t1930s\t6\n1949\t1940s\t18\n1972\t1970s\t22\n1956\t1950s\t20\n1983\t1980s\t13\n1984\t1980s\t16\n1986\t1980s\t16\n1970\t1970s\t11\n1953\t1950s\t21\n1941\t1940s\t28\n1964\t1960s\t24\n1929\t1920s\t24\n1939\t1930s\t21\n1975\t1970s\t26\n1974\t1970s\t23\n1958\t1950s\t24\n1938\t1930s\t7\n1945\t1940s\t14\n1952\t1950s\t18\n1937\t1930s\t9\n1943\t1940s\t12\n1951\t1950s\t16\n1961\t1960s\t21\n1980\t1980s\t22\n1932\t1930s\t13\n1934\t1930s\t9\n1931\t1930s\t26\n1947\t1940s\t9\n1936\t1930s\t13\n1933\t1930s\t12\n1925\t1920s\t22\n1927\t1920s\t29\n1920\t1920s\t24\n1921\t1920s\t23\n1915\t1910s\t5\n2009\t2000s\t13\n1924\t1920s\t25\n1912\t1910s\t2\n1909\t1900s\t2\n1919\t1910s\t4\n1913\t1910s\t2\n1916\t1910s\t4\n2010\t2010s\t10\n1923\t1920s\t7\n1895\t1890s\t13\n1914\t1910s\t1\n1918\t1910s\t2\n1910\t1910s\t1\n1906\t1900s\t2\n1896\t1890s\t9\n1903\t1900s\t12\n1888\t1880s\t28\n1917\t1910s\t3\n1902\t1900s\t44\n1908\t1900s\t3\n1904\t1900s\t4\n1907\t1900s\t2\n2011\t2010s\t9\n1898\t1890s\t10\n1905\t1900s\t2\n2012\t2010s\t7\n1911\t1910s\t1\n1897\t1890s\t6\n1901\t1900s\t8\n1899\t1890s\t2\n1900\t1900s\t2\n1894\t1890s\t7\n1893\t1890s\t15\n1890\t1890s\t9\n1892\t1890s\t3\n1891\t1890s\t4\n2013\t2010s\t6\n2016\t2010s\t3\n2015\t2010s\t4\n2014\t2010s\t5\n2019\t2010s\t1\n2021\t2020s\t0\n1878\t1870s\t71\n\t0s\t0\n2018\t2010s\t2\n1887\t1880s\t2\n2017\t2010s\t2\n2020\t2020s\t0\n1885\t1880s\t1\n1884\t1880s\t5\n1883\t1880s\t1\n1886\t1880s\t0\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/bac33f91cede9b81869be3d8989ea5bc"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600097597201_1784964963",
+      "id": "paragraph_1600097597201_1784964963",
+      "dateCreated": "2020-09-14 17:33:17.226",
+      "dateStarted": "2020-09-30 18:16:43.109",
+      "dateFinished": "2020-09-30 18:16:49.911",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n## Create and Query the Ratings Source Tables",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:17:20.552",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eCreate and Query the Ratings Source Tables\u003c/h2\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600411389944_1558797889",
+      "id": "paragraph_1600411389944_1558797889",
+      "dateCreated": "2020-09-18 08:43:09.946",
+      "dateStarted": "2020-09-30 18:17:11.832",
+      "dateFinished": "2020-09-30 18:17:11.876",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%sh\n\nhead -n 5 /Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_ratings_data.csv",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:20:52.490",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 84.0,
+              "optionOpen": false
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/sh",
+        "editorHide": false,
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "1066,10704606,http://mubi.com/films/pavee-lackeen-the-traveller-girl/ratings/10704606,2.0,2014-08-15 23:42:31,,0,0,85981819,True,True,False,True\n1066,10177114,http://mubi.com/films/pavee-lackeen-the-traveller-girl/ratings/10177114,2.0,2014-01-30 13:21:57,,0,0,4208563,False,False,True,True\n1066,10130280,http://mubi.com/films/pavee-lackeen-the-traveller-girl/ratings/10130280,3.0,2014-01-19 01:04:23,I am a bit disappointed by this documentary film I\u0027ve been wanting to watch for years as it is way less informative than I had imagined and rather cheaply made technically speaking. Otherwise it is O.K. and rather interesting.,0,0,9820140,False,False,True,False\n1066,8357049,http://mubi.com/films/pavee-lackeen-the-traveller-girl/ratings/8357049,4.0,2012-10-02 18:28:47,,0,0,68654088,False,False,True,True\n1066,6220019,http://mubi.com/films/pavee-lackeen-the-traveller-girl/ratings/6220019,4.0,2011-08-19 01:53:53,,0,0,97262846,False,False,True,False\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600127739875_2001810815",
+      "id": "paragraph_1600127739875_2001810815",
+      "dateCreated": "2020-09-15 01:55:39.875",
+      "dateStarted": "2020-09-30 18:20:49.014",
+      "dateFinished": "2020-09-30 18:20:49.086",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%sh\n\nhead -n 5 /Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_ratings_user_data.csv",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:21:02.687",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sh",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/sh",
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "68654088,2012-10-02,False,False,https://assets.mubicdn.net/images/avatars/27714/images-w150.jpg?1523889463,,True,True\n84114365,2010-12-25,False,False,https://assets.mubicdn.net/images/avatars/1808/images-w150.jpg?1523883471,,True,False\n29755671,2010-11-15,False,False,//mubi.com/assets/placeholders/avatar-c68833eec06a12b110c74dd2fa1709ae983ead021e695f886dcfafda0da3c6ed.png,,True,False\n93302487,2010-01-05,False,False,https://assets.mubicdn.net/images/avatars/12246/images-w150.jpg?1523885889,,True,False\n65861201,2009-06-27,False,False,https://assets.mubicdn.net/images/avatars/4836/images-w150.jpg?1523884153,,True,False\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600127747603_1002903625",
+      "id": "paragraph_1600127747603_1002903625",
+      "dateCreated": "2020-09-15 01:55:47.603",
+      "dateStarted": "2020-09-30 18:20:59.158",
+      "dateFinished": "2020-09-30 18:20:59.192",
+      "status": "FINISHED"
+    },
+    {
+      "title": "mubi_ratings",
+      "text": "%flink.bsql\n\nDROP TABLE IF EXISTS mubi_ratings;\n\nCREATE TABLE mubi_ratings (\n    movie_id INT,\n    rating_id INT,\n    rating_url STRING,\n    rating_score FLOAT,\n    rating_timestamp_utc TIMESTAMP(3),\n    critic STRING,\n    critic_likes INT,\n    critic_comments INT,\n    user_id INT,\n    user_trialist STRING,\n    user_subscriber STRING,\n    user_eligible_for_trial STRING,\n    user_has_payment_method STRING\n)\nWITH (\n  \u0027connector\u0027 \u003d \u0027filesystem\u0027,\n  \u0027path\u0027 \u003d \u0027/Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_ratings_data.csv\u0027,\n  \u0027format\u0027 \u003d \u0027csv\u0027,\n  \u0027csv.ignore-parse-errors\u0027\u003d\u0027true\u0027 --Ignore parse errors caused by empty strings\n);\n\n--Get a record count.\nSELECT COUNT(*) ratings_cnt FROM mubi_ratings;\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:21:28.297",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 90.0,
+              "optionOpen": false
+            }
+          },
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 84.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "ratings_cnt": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "title": true,
+        "editorHide": false,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been dropped.\nTable has been created.\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "ratings_cnt\n15520004\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/5f2ccf90968cd404270ae6dc0cdc8bea"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600118239604_333085538",
+      "id": "paragraph_1600118239604_333085538",
+      "dateCreated": "2020-09-14 23:17:19.605",
+      "dateStarted": "2020-09-30 18:21:28.304",
+      "dateFinished": "2020-09-30 18:22:09.718",
+      "status": "FINISHED"
+    },
+    {
+      "title": "mubi_ratings_user",
+      "text": "%flink.bsql\n\nDROP TABLE IF EXISTS mubi_ratings_user;\n\nCREATE TABLE mubi_ratings_user (\n    user_id INT,\n    rating_date_utc DATE,\n    user_trialist STRING,\n    user_subscriber STRING,\n    user_avatar_image_url STRING,\n    user_cover_image_url STRING,\n    user_eligible_for_trial STRING,\n    user_has_payment_method STRING\n)\nWITH (\n  \u0027connector\u0027 \u003d \u0027filesystem\u0027,\n  \u0027path\u0027 \u003d \u0027/Users/martapaesmoreira/Desktop/ACAH2020_data/mubi_ratings_user_data.csv\u0027,\n  \u0027format\u0027 \u003d \u0027csv\u0027\n);\n\n--Get a record count.\nSELECT COUNT(*) ratings_cnt FROM mubi_ratings_user;",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:22:35.896",
+      "config": {
+        "colWidth": 6.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "1": {
+            "graph": {
+              "mode": "table",
+              "height": 196.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "ratings_cnt": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "title": true,
+        "editorHide": false,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been dropped.\nTable has been created.\n"
+          },
+          {
+            "type": "TABLE",
+            "data": "ratings_cnt\n4297640\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/17c8c2b7ee7387bdcfbc1d77366d19d8"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600126837660_1937171911",
+      "id": "paragraph_1600126837660_1937171911",
+      "dateCreated": "2020-09-15 01:40:37.660",
+      "dateStarted": "2020-09-30 18:22:35.905",
+      "dateFinished": "2020-09-30 18:22:46.582",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%flink.bsql\n\nSHOW TABLES;",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:44:07.940",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "table": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "tableHide": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "table\nmubi_movies\nmubi_ratings\nmubi_ratings_user\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1601491427374_447152614",
+      "id": "paragraph_1601491427374_447152614",
+      "dateCreated": "2020-09-30 20:43:47.374",
+      "dateStarted": "2020-09-30 20:43:55.706",
+      "dateFinished": "2020-09-30 20:43:58.250",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n### Active Users over time\n\n**Measure:** rating activity.\n\nThe number of active users in the Mubi platform has seen a steady increase over the years, with a decline followed by steadybut lower activity in comparison, from 2012. It\u0027s funny to see that: \n\n**1.** There is a peak active users on **January 1st** every year, which is likely when people are making their \"BEST OF YEAR X\" lists.\n**2.** There was a huge boost in active users when the **Corona pandemic** hit (2020-03).",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 18:24:23.816",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003eActive Users over time\u003c/h3\u003e\n\u003cp\u003e\u003cstrong\u003eMeasure:\u003c/strong\u003e rating activity.\u003c/p\u003e\n\u003cp\u003eThe number of active users in the Mubi platform has seen a steady increase over the years, with a decline followed by steadybut lower activity in comparison, from 2012. It\u0026rsquo;s funny to see that:\u003c/p\u003e\n\u003cp\u003e\u003cstrong\u003e1.\u003c/strong\u003e There is a peak active users on \u003cstrong\u003eJanuary 1st\u003c/strong\u003e every year, which is likely when people are making their \u0026ldquo;BEST OF YEAR X\u0026rdquo; lists.\u003cbr /\u003e\n\u003cstrong\u003e2.\u003c/strong\u003e There was a huge boost in active users when the \u003cstrong\u003eCorona pandemic\u003c/strong\u003e hit (2020-03).\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600406681116_1743512958",
+      "id": "paragraph_1600406681116_1743512958",
+      "dateCreated": "2020-09-18 07:24:41.117",
+      "dateStarted": "2020-09-30 18:24:23.818",
+      "dateFinished": "2020-09-30 18:24:23.867",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Active Users Over Time",
+      "text": "%flink.pyflink\n\nactive_users \u003d bt_env \\\n    .from_path(\"mubi_ratings\") \\\n    .group_by(\"rating_timestamp_utc.dateFormat(\u0027YYYY-MM\u0027) AS rating_ym\") \\\n    .select(\"rating_ym, user_id.count AS user_count\") \\\n    .order_by(\"rating_ym\")\n    \n\nz.show(active_users)\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-25 11:04:09.993",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "stackedAreaChart",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "rating_ym": "string",
+                      "EXPR$0": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default",
+                  "stacked": false
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "stackedAreaChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default",
+                  "style": "stack"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "rating_ym",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": [
+                {
+                  "name": "user_count",
+                  "index": 1.0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "editorHide": false,
+        "tableHide": false,
+        "title": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "rating_ym\tuser_count\n1970-01\t2\n2008-02\t90\n2008-03\t1677\n2008-04\t2599\n2008-05\t2727\n2008-06\t2225\n2008-07\t1766\n2008-08\t1513\n2008-09\t1028\n2008-10\t1403\n2008-11\t25459\n2008-12\t29872\n2009-01\t21398\n2009-02\t13111\n2009-03\t12380\n2009-04\t33823\n2009-05\t81007\n2009-06\t101231\n2009-07\t96545\n2009-08\t106369\n2009-09\t151317\n2009-10\t165614\n2009-11\t185365\n2009-12\t127246\n2010-01\t178437\n2010-02\t200492\n2010-03\t240429\n2010-04\t215054\n2010-05\t237200\n2010-06\t143192\n2010-07\t155210\n2010-08\t175816\n2010-09\t157349\n2010-10\t167954\n2010-11\t334287\n2010-12\t198889\n2011-01\t328504\n2011-02\t239051\n2011-03\t234951\n2011-04\t164551\n2011-05\t176787\n2011-06\t187854\n2011-07\t181797\n2011-08\t202562\n2011-09\t143771\n2011-10\t137237\n2011-11\t146024\n2011-12\t191164\n2012-01\t161310\n2012-02\t122203\n2012-03\t107013\n2012-04\t99005\n2012-05\t108384\n2012-06\t110849\n2012-07\t129358\n2012-08\t146218\n2012-09\t127381\n2012-10\t112846\n2012-11\t107684\n2012-12\t111058\n2013-01\t139014\n2013-02\t106984\n2013-03\t95940\n2013-04\t90228\n2013-05\t77305\n2013-06\t76244\n2013-07\t80228\n2013-08\t76339\n2013-09\t81708\n2013-10\t83513\n2013-11\t80016\n2013-12\t87604\n2014-01\t102703\n2014-02\t86421\n2014-03\t63618\n2014-04\t50837\n2014-05\t64044\n2014-06\t62053\n2014-07\t67365\n2014-08\t76471\n2014-09\t73848\n2014-10\t66477\n2014-11\t74812\n2014-12\t88628\n2015-01\t114898\n2015-02\t88542\n2015-03\t86732\n2015-04\t76228\n2015-05\t81555\n2015-06\t73985\n2015-07\t79043\n2015-08\t85210\n2015-09\t87080\n2015-10\t97344\n2015-11\t95009\n2015-12\t97151\n2016-01\t124848\n2016-02\t123811\n2016-03\t98081\n2016-04\t94422\n2016-05\t89958\n2016-06\t82423\n2016-07\t96001\n2016-08\t95675\n2016-09\t78453\n2016-10\t77676\n2016-11\t84773\n2016-12\t113862\n2017-01\t120386\n2017-02\t92361\n2017-03\t98717\n2017-04\t85909\n2017-05\t71680\n2017-06\t76907\n2017-07\t82905\n2017-08\t83737\n2017-09\t81456\n2017-10\t88153\n2017-11\t85695\n2017-12\t85269\n2018-01\t113057\n2018-02\t91886\n2018-03\t95461\n2018-04\t73941\n2018-05\t72351\n2018-06\t69132\n2018-07\t75446\n2018-08\t78918\n2018-09\t79354\n2018-10\t81388\n2018-11\t84502\n2018-12\t91191\n2019-01\t172563\n2019-02\t103852\n2019-03\t113154\n2019-04\t101867\n2019-05\t94571\n2019-06\t91111\n2019-07\t97393\n2019-08\t93281\n2019-09\t88331\n2019-10\t105055\n2019-11\t104017\n2019-12\t110460\n2020-01\t141585\n2020-02\t122899\n2020-03\t186103\n2020-04\t196701\n2020-12\t14461\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/d3114c6dd300f90f725455e468cfd17e"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600156443363_1262477232",
+      "id": "paragraph_1600156443363_1262477232",
+      "dateCreated": "2020-09-15 09:54:03.364",
+      "dateStarted": "2020-09-25 11:04:10.002",
+      "dateFinished": "2020-09-25 11:05:11.225",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n## Enriching Data\n\n",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:46:22.954",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch2\u003eEnriching Data\u003c/h2\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600413477110_2005233834",
+      "id": "paragraph_1600413477110_2005233834",
+      "dateCreated": "2020-09-18 09:17:57.115",
+      "dateStarted": "2020-09-30 20:46:22.955",
+      "dateFinished": "2020-09-30 20:46:22.961",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Top 10 Rated Movies in Year X",
+      "text": "%flink.pyflink\n\nl_top_10_year \u003d bt_env \\\n    .from_path(\"mubi_movies\") \\\n    .select(\"movie_id, movie_title, movie_release_year\")\n\nr_top_10_year \u003d bt_env \\\n    .from_path(\"mubi_ratings\") \\\n    .filter(\"rating_timestamp_utc.dateFormat(\u0027YYYY\u0027)\u003d\u0027\"+z.textbox(\"year\", \"2020\")+\"\u0027\") \\\n    .group_by(\"movie_id\") \\\n    .select(\"movie_id AS m_id, rating_score.avg AS r_avg, critic.count AS c_critic\") \\\n    .where(\"r_avg.isNotNull\")\n    \ntop_10_year \u003d l_top_10_year \\\n    .join(r_top_10_year) \\\n    .where(\"movie_id\u003dm_id\") \\\n    .select(\"movie_title, movie_release_year.substring(1,4) AS movie_year, r_avg AS avg_rating_score, c_critic AS n_user_critics\") \\\n    .order_by(\"avg_rating_score.desc, n_user_critics.desc\") \\\n    .fetch(10)\n    \nz.show(top_10_year)",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-25 10:56:32.726",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "movie_title": "string",
+                      "movie_year": "string",
+                      "avg_rating_score": "string",
+                      "n_user_critics": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                }
+              },
+              "commonSetting": {}
+            }
+          }
+        },
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "title": true
+      },
+      "settings": {
+        "params": {
+          "name": "sun",
+          "year": "2019"
+        },
+        "forms": {
+          "year": {
+            "type": "TextBox",
+            "name": "year",
+            "displayName": "year",
+            "defaultValue": "2020",
+            "hidden": false
+          }
+        }
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TABLE",
+            "data": "movie_title\tmovie_year\tavg_rating_score\tn_user_critics\nOn Cinema at the Cinema\t2012\t5.0\t6\nThe Day Today\t1994\t5.0\t6\nThe Peter Serafinowicz Show\t2007\t5.0\t4\nDans l\u0027obscurite\t2007\t5.0\t4\nJoe Hisaishi Budokan Studio Ghibli 25 Years Concert\t2008\t5.0\t4\nPlayback\t2012\t5.0\t4\nTrailer Park Boys\t2001\t5.0\t4\nMagino Village: A Tale\t1987\t5.0\t4\nLaid-Back Camp\t2018\t5.0\t4\nAlyonka\t1961\t5.0\t4\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/00fc9bcbfb20d6b64c96ca2d8389a10f"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600406202784_828308957",
+      "id": "paragraph_1600406202784_828308957",
+      "dateCreated": "2020-09-18 07:16:42.791",
+      "dateStarted": "2020-09-18 10:36:19.330",
+      "dateFinished": "2020-09-18 10:37:21.138",
+      "status": "FINISHED"
+    },
+    {
+      "text": "%md\n\n### Using Pandas (and other Python libraries)\n\n#### Conversion .toPandas()\n\nOne way to use PyFlink with Pandas is to first use it to reduce the amount of data we want to act upon (which might be a considerably small subset of the original dataset), taking advantage of how performant PyFlink is even on the largest of largest datasets; and then convert the resulting table into a Pandas `DataFrame`.",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-30 20:49:58.712",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "editorMode": "ace/mode/markdown",
+        "editorHide": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "\u003cdiv class\u003d\"markdown-body\"\u003e\n\u003ch3\u003eUsing Pandas (and other Python libraries)\u003c/h3\u003e\n\u003ch4\u003eConversion .toPandas()\u003c/h4\u003e\n\u003cp\u003eOne way to use PyFlink with Pandas is to first use it to reduce the amount of data we want to act upon (which might be a considerably small subset of the original dataset), taking advantage of how performant PyFlink is even on the largest of largest datasets; and then convert the resulting table into a Pandas \u003ccode\u003eDataFrame\u003c/code\u003e.\u003c/p\u003e\n\n\u003c/div\u003e"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600411573814_222852374",
+      "id": "paragraph_1600411573814_222852374",
+      "dateCreated": "2020-09-18 08:46:13.816",
+      "dateStarted": "2020-09-30 20:49:58.718",
+      "dateFinished": "2020-09-30 20:49:58.736",
+      "status": "FINISHED"
+    },
+    {
+      "title": "Plotting a Histogram",
+      "text": "%flink.pyflink\n\nratings_1820 \u003d bt_env \\\n    .from_path(\"mubi_ratings\") \\\n    .filter(\"rating_timestamp_utc.dateFormat(\u0027YYYY\u0027).in(\u00272018\u0027,\u00272019\u0027,\u00272020\u0027)\") \\\n    .select(\"rating_timestamp_utc.dateFormat(\u0027YYYY\u0027) AS rating_year, rating_score\")\n\npdf \u003d ratings_1820.to_pandas()\n\nax \u003d pdf.hist(column\u003d\u0027rating_score\u0027, by\u003d\u0027rating_year\u0027, bins\u003d5, grid\u003dFalse, figsize\u003d(12,8), color\u003d\u0027#3171A9\u0027, zorder\u003d2, rwidth\u003d0.9)\n\nz.show(ax)",
+      "user": "anonymous",
+      "dateUpdated": "2020-09-18 09:24:26.963",
+      "config": {
+        "colWidth": 12.0,
+        "fontSize": 9.0,
+        "enabled": true,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300.0,
+              "optionOpen": false,
+              "setting": {
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [
+                {
+                  "name": "rating_score",
+                  "index": 0.0,
+                  "aggr": "sum"
+                }
+              ],
+              "groups": [],
+              "values": []
+            },
+            "helium": {}
+          }
+        },
+        "editorSetting": {
+          "language": "python",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/python",
+        "title": true,
+        "tableHide": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "[[\u003cAxesSubplot:title\u003d{\u0027center\u0027:\u00272018\u0027}\u003e\n  \u003cAxesSubplot:title\u003d{\u0027center\u0027:\u00272019\u0027}\u003e]\n [\u003cAxesSubplot:title\u003d{\u0027center\u0027:\u00272020\u0027}\u003e \u003cAxesSubplot:\u003e]]\n\n"
+          },
+          {
+            "type": "IMG",
+            "data": "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\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {
+        "jobUrl": {
+          "propertyName": "jobUrl",
+          "label": "FLINK JOB",
+          "tooltip": "View in Flink web UI",
+          "group": "flink",
+          "values": [
+            {
+              "jobUrl": "http://localhost:8081#/job/bdd1d7073a9c93ff2fb3df0c29a3a81d"
+            }
+          ],
+          "interpreterSettingId": "flink"
+        }
+      },
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1600185749782_1953157018",
+      "id": "paragraph_1600185749782_1953157018",
+      "dateCreated": "2020-09-15 18:02:29.782",
+      "dateStarted": "2020-09-18 09:24:26.978",
+      "dateFinished": "2020-09-18 09:26:32.898",
+      "status": "FINISHED"
+    }
+  ],
+  "name": "ApacheCon@Home 2020",
+  "id": "2FH7SDKQ8",
+  "defaultInterpreterGroup": "flink",
+  "version": "0.9.0-preview2",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false
+  },
+  "info": {}
+}
