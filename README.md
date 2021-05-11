@@ -1,8 +1,8 @@
 # Interactive Data Exploration with PyFlink and Zeppelin Notebooks
 
-**(WIP)**
+> :warning: **Update:** This repository will no longer be actively maintained. Please check the [Ververica fork](https://github.com/ververica/pyflink-zeppelin).
 
-See the [slides](https://noti.st/morsapaes/oTSeHt/snakes-on-a-plane-interactive-data-exploration-with-pyflink-and-zeppelin-notebooks) for context.
+See the [slides](https://noti.st/morsapaes/oTSeHt/snakes-on-a-plane-interactive-data-exploration-with-pyflink-and-zeppelin-notebooks) for more context.
 
 #### Pre-requisites
 
@@ -46,11 +46,11 @@ The recommended (and quickest way) to define a source table is to use [SQL DDL](
 
 As an example, you can use PyFlink to query the `mubi_movies` table and get the average movie popularity per movie release year. What does it tell us?
 
-:moon: There are two clear outlier years when it comes to popularity (1878 and 1902). If you investigate further, there is only one movie release in each of these years on Mubi ("Sallie Gardner at a Gallop" and "A Trip to the Moon") — they're just really popular!	
+* There are two clear outlier years when it comes to popularity (1878 and 1902). If you investigate further, there is only one movie release in each of these years on Mubi ("Sallie Gardner at a Gallop" and "A Trip to the Moon") — they're just really popular!	
 
-:new_moon_with_face: The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.
+* The 1920s were a busy period for silent movie releases, which seem pretty popular with Mubi users.
 
-:sparkles: The 1920s-1960s are considered the golden era of Hollywood, so that can explain the increased popularity of movies released in this period.
+* The 1920s-1960s are considered the golden era of Hollywood, so that can explain the increased popularity of movies released in this period.
 
 ![avg_popularity](https://user-images.githubusercontent.com/23521087/110458892-95369c80-80cc-11eb-8464-c8cc6144d594.png)
 
@@ -70,4 +70,4 @@ One way to use PyFlink with Pandas is to first use it to reduce the amount of da
 
 **And that's it!**
 
-If you have any questions or feedback, feel free to DM me on Twitter [@morsapaes](https://twitter.com/morsapaes).
+For the latest updates, follow [Apache Flink](https://twitter.com/ApacheFlink) and [Apache Zeppelin](https://twitter.com/ApacheZeppelin) on Twitter.
